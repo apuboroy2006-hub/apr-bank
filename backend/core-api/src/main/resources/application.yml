@@ -1,0 +1,47 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: apr-bank-core-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aprbank
+    username: aprbank_app
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  mongodb:
+    uri: ${MONGODB_URI}
+
+  data:
+    redis:
+      url: ${REDIS_URL}
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+info:
+  app:
+    name: APR BANK Core API
+    version: 0.1.0
+    description: APR BANK fintech platform backend

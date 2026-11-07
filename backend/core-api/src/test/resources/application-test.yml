@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: apr-bank-integration-test
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      repositories:
+        enabled: false
+
+management:
+  health:
+    redis:
+      enabled: false
