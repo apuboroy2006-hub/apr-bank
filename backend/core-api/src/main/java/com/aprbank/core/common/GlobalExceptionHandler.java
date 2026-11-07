@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -45,6 +46,18 @@ public class GlobalExceptionHandler {
         return buildResponse(
             HttpStatus.BAD_REQUEST,
             "Invalid or unreadable request body",
+            request
+        );
+    }
+
+@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> handleTypeMismatch(
+            MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request) {
+
+        return buildResponse(
+            HttpStatus.BAD_REQUEST,
+            "Invalid request parameter: " + ex.getName(),
             request
         );
     }
