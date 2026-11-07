@@ -93,7 +93,7 @@ class LedgerPostingServiceTest {
         when(entryRepository.findByTransaction_Id(transactionId))
             .thenReturn(List.of());
 
-        when(accountRepository.findAllById(any()))
+        when(accountRepository.findAllByIdInForUpdate(any()))
             .thenReturn(List.of(debitAccount, creditAccount));
 
         when(transactionRepository.save(transaction))

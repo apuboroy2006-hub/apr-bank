@@ -15,6 +15,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,4 +120,42 @@ class LedgerAccountRepositoryIntegrationTest {
                 () -> accountRepository.saveAndFlush(duplicate)
         );
     }
-}
+
+    @Test
+    void shouldLoadAccountsWithPessimisticWriteLock() {
+        LedgerAccount first = accountRepository.saveAndFlush(
+                LedgerAccount.create(
+                        "LOCK-" + UUID.randomUUID().toString().substring(0, 8),
+                        "Lock Test Account One",
+                        AccountType.ASSET,
+                        "INR"
+                )
+        );
+
+        LedgerAccount second = accountRepository.saveAndFlush(
+                LedgerAccount.create(
+                        "LOCK-" + UUID.randomUUID().toString().substring(0, 8),
+                        "Lock Test Account Two",
+                        AccountType.LIABILITY,
+                        "INR"
+                )
+        );
+
+        List<UUID> accountIds = List.of(first.getId(), second.getId());
+
+        List<LedgerAccount> lockedAccounts =
+                accountRepository.findAllByIdInForUpdate(accountIds);
+
+        assertEquals(2, lockedAccounts.size());
+        List<UUID> reversedAccountIds = List.of(second.getId(), first.getId());
+
+        List<LedgerAccount> lockedAccountsFromReversedInput =
+                accountRepository.findAllByIdInForUpdate(reversedAccountIds);
+
+        assertEquals(
+                lockedAccounts.stream().map(LedgerAccount::getId).toList(),
+                lockedAccountsFromReversedInput.stream()
+                        .map(LedgerAccount::getId)
+                        .toList()
+        );
+    }}

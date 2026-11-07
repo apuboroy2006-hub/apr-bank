@@ -71,7 +71,7 @@ public class LedgerPostingService {
 
         Map<UUID, LedgerAccount> accounts = new HashMap<>();
 
-        for (LedgerAccount account : accountRepository.findAllById(accountIds)) {
+        for (LedgerAccount account : accountRepository.findAllByIdInForUpdate(accountIds)) {
             accounts.put(account.getId(), account);
         }
 
