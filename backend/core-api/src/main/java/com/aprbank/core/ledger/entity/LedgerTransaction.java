@@ -38,6 +38,22 @@ public class LedgerTransaction {
     protected LedgerTransaction() {
     }
 
+    public static LedgerTransaction create(
+            String referenceNumber,
+            String transactionType,
+            String description,
+            String idempotencyKey) {
+
+        LedgerTransaction transaction = new LedgerTransaction();
+        transaction.setReferenceNumber(referenceNumber);
+        transaction.setTransactionType(transactionType);
+        transaction.setDescription(description);
+        transaction.setIdempotencyKey(idempotencyKey);
+        transaction.setStatus(LedgerTransactionStatus.PENDING);
+
+        return transaction;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.initiatedAt = Instant.now();
