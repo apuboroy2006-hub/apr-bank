@@ -14,11 +14,11 @@ permissions:
 jobs:
   project-validation:
     name: Project Structure Validation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate project files
         run: |
@@ -30,4 +30,6 @@ jobs:
           echo "APR BANK project structure validated."
 
       - name: Validate Docker Compose configuration
+        env:
+          DB_PASSWORD: ci-validation-only-not-a-real-secret
         run: docker compose config --quiet
