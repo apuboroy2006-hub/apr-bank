@@ -1,0 +1,33 @@
+﻿name: APR BANK CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  project-validation:
+    name: Project Structure Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate project files
+        run: |
+          test -f README.md
+          test -f .gitignore
+          test -f docker-compose.yml
+          test -f .env.example
+
+          echo "APR BANK project structure validated."
+
+      - name: Validate Docker Compose configuration
+        run: docker compose config --quiet
